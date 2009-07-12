@@ -27,7 +27,7 @@ Capistrano::Configuration.instance(:must_exist).load do
       SRC_PACKAGES[:passenger] = {
         :url => "git://github.com/FooBarWidget/passenger.git",
         :download_method => :git,
-        :version => 'release-2.2.2', # Specify a tagged release to deploy
+        :version => 'release-2.2.3', # Specify a tagged release to deploy
         :configure => '',
         :make => '',
         :install => './bin/passenger-install-apache2-module'
