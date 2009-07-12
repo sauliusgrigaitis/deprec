@@ -310,20 +310,23 @@ module Deprec2
     pkg[:configure] ||= './configure ;'
     pkg[:make] ||= 'make;'
     pkg[:install] ||= 'make install;'
+    pkg[:version] ||= "c#{pkg[:filename] =~ /-(.*)\.tar\.gz/; $1 || "1"}"
+    pkg[:release] ||= "1"
   end
 
   # install package from source
   def install_from_src(src_package, src_dir)
     package_dir = File.join(src_dir, src_package[:dir])
     unpack_src(src_package, src_dir)
-    apt.install( {:base => %w(build-essential)}, :stable )
+    apt.install( {:base => %w(build-essential checkinstall)}, :stable )
     # XXX replace with invoke_command
     sudo <<-SUDO
     sh -c '
     cd #{package_dir};
     #{src_package[:configure]}
     #{src_package[:make]}
-    #{src_package[:install]}
+    sudo /usr/bin/checkinstall -y -D --install=yes --pkgversion=#{src_package[:version]}  --pkgrelease=#{src_package[:release]} #{src_package[:install]}
+
     #{src_package[:post_install]}
     '
     SUDO
